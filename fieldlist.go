@@ -1,0 +1,52 @@
+package consistent
+
+import (
+	"go/ast"
+
+	"golang.org/x/tools/go/analysis"
+)
+
+const (
+	fieldListExplicit = "explicit"
+	fieldListCompact  = "compact"
+)
+
+var fieldListFlagAllowedValues = []string{flagIgnore, fieldListExplicit, fieldListCompact}
+
+func checkFieldList(pass *analysis.Pass, fields *ast.FieldList, fieldTypePlural string, mode string) {
+	if fields == nil {
+		return
+	}
+
+	switch mode {
+	case flagIgnore:
+
+	case fieldListExplicit:
+		for _, f := range fields.List {
+			if len(f.Names) > 1 {
+				pass.Reportf(fields.Pos(), "declare the type of %s explicitly", fieldTypePlural)
+				break
+			}
+		}
+
+	case fieldListCompact:
+		list := fields.List
+		if len(list) <= 1 {
+			return
+		}
+
+		for i, f := range list[1:] {
+			typ := pass.TypesInfo.TypeOf(f.Type)
+			prevTyp := pass.TypesInfo.TypeOf(list[i].Type)
+
+			if typ == prevTyp {
+				pass.Reportf(fields.Pos(), "declare the type of similar consecutive %s only once", fieldTypePlural)
+				break
+			}
+		}
+	}
+}
+
+func namedFields(fields *ast.FieldList) bool {
+	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) != 0
+}
