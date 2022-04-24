@@ -78,7 +78,7 @@ func f() (a, b int) {
 ```
 
 
-**-typeParams - check function type parameter types
+**-typeParams - check function type parameter types**
 
 ```go
 // -typeParams explicit
