@@ -223,6 +223,17 @@ case "bar":
 ```
 
 
+**-emptyIfaces - check empty interfaces**
+
+```go
+// -emptyIfaces any
+var x any
+
+// -emptyIfaces iface
+var x interface{}
+```
+
+
 **-labelsRegexp - check labels against regexp**
 
 ```go
@@ -250,58 +261,60 @@ Usage: consistent [-flag] [package]
 
 
 Flags:
-  -V    print version and exit
+  -V	print version and exit
   -all
-        no effect (deprecated)
+    	no effect (deprecated)
   -andNOTs value
-        check AND-NOT expressions (ignore/andNot/andComp) (default andNot)
+    	check AND-NOT expressions (ignore/andNot/andComp) (default andNot)
   -c int
-        display offending line with this many lines of context (default -1)
+    	display offending line with this many lines of context (default -1)
   -cpuprofile string
-        write CPU profile to this file
+    	write CPU profile to this file
   -debug string
-        debug flags, any subset of "fpstv"
+    	debug flags, any subset of "fpstv"
+  -emptyIfaces value
+    	check empty interfaces (ignore/any/iface) (default any)
   -fix
-        apply all suggested fixes
+    	apply all suggested fixes
   -flags
-        print analyzer flags in JSON
+    	print analyzer flags in JSON
   -floatLits value
-        check floating-point literals (ignore/explicit/implicit) (default explicit)
+    	check floating-point literals (ignore/explicit/implicit) (default explicit)
   -hexLits value
-        check upper/lowercase in hex literals (ignore/lower/upper) (default lower)
+    	check upper/lowercase in hex literals (ignore/lower/upper) (default lower)
   -json
-        emit JSON output
+    	emit JSON output
   -labelsRegexp value
-        check labels against regexp ("" to ignore) (default ^[a-z][a-zA-Z0-9]*$)
+    	check labels against regexp ("" to ignore) (default ^[a-z][a-zA-Z0-9]*$)
   -lenChecks value
-        check len/cap checks (ignore/equalZero/compareZero/compareOne) (default equalZero)
+    	check len/cap checks (ignore/equalZero/compareZero/compareOne) (default equalZero)
   -makeAllocs value
-        check allocations using make (ignore/literal/make) (default literal)
+    	check allocations using make (ignore/literal/make) (default literal)
   -memprofile string
-        write memory profile to this file
+    	write memory profile to this file
   -newAllocs value
-        check allocations using new (ignore/literal/new) (default literal)
+    	check allocations using new (ignore/literal/new) (default literal)
   -params value
-        check function/method parameter types (ignore/explicit/compact) (default explicit)
+    	check function/method parameter types (ignore/explicit/compact) (default explicit)
   -rangeChecks value
-        check range checks (ignore/left/center) (default left)
+    	check range checks (ignore/left/center) (default left)
   -returns value
-        check function/method return value types (ignore/explicit/compact) (default explicit)
+    	check function/method return value types (ignore/explicit/compact) (default explicit)
   -singleImports value
-        check single import declarations (ignore/bare/parens) (default bare)
+    	check single import declarations (ignore/bare/parens) (default bare)
   -source
-        no effect (deprecated)
+    	no effect (deprecated)
   -switchCases value
-        check switch case clauses (ignore/comma/or) (default comma)
+    	check switch case clauses (ignore/comma/or) (default comma)
   -switchDefaults value
-        check switch default clauses (ignore/last/first) (default last)
+    	check switch default clauses (ignore/last/first) (default last)
   -tags string
-        no effect (deprecated)
+    	no effect (deprecated)
   -trace string
-        write trace log to this file
+    	write trace log to this file
   -typeParams value
-        check function type parameter types (ignore/explicit/compact) (default explicit)
-  -v    no effect (deprecated)
+    	check function type parameter types (ignore/explicit/compact) (default explicit)
+  -v	no effect (deprecated)
 ```
 
 

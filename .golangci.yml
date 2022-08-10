@@ -29,7 +29,6 @@ linters:
     - gofmt
     - goprintffuncname
     - gosec
-    - ifshort
     - nakedret
     - nestif
     - nilerr

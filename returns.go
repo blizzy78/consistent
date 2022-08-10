@@ -29,3 +29,7 @@ func checkReturnsFuncLit(pass *analysis.Pass, fun *ast.FuncLit, mode string) {
 
 	checkFieldList(pass, fun.Type.Results, "function return values", mode)
 }
+
+func namedFields(fields *ast.FieldList) bool {
+	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) != 0
+}

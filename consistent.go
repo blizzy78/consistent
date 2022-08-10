@@ -26,6 +26,7 @@ type configuration struct {
 	lenChecks      enumValue
 	switchCases    enumValue
 	switchDefaults enumValue
+	emptyIfaces    enumValue
 	labelsRegexp   regexpValue
 }
 
@@ -99,6 +100,11 @@ func NewAnalyzer() *analysis.Analyzer {
 			value:   switchDefaultsLast,
 		},
 
+		emptyIfaces: enumValue{
+			allowed: emptyIfacesFlagAllowedValues,
+			value:   emptyIfacesAny,
+		},
+
 		labelsRegexp: newRegexpValue("^[a-z][a-zA-Z0-9]*$"),
 	}
 
@@ -129,6 +135,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	ana.Flags.Var(&cfg.lenChecks, "lenChecks", cfg.lenChecks.description("check len/cap checks"))
 	ana.Flags.Var(&cfg.switchCases, "switchCases", cfg.switchCases.description("check switch case clauses"))
 	ana.Flags.Var(&cfg.switchDefaults, "switchDefaults", cfg.switchDefaults.description("check switch default clauses"))
+	ana.Flags.Var(&cfg.emptyIfaces, "emptyIfaces", cfg.emptyIfaces.description("check empty interfaces"))
 	ana.Flags.Var(&cfg.labelsRegexp, "labelsRegexp", "check labels against regexp (\"\" to ignore)")
 
 	return &ana
@@ -143,12 +150,16 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 		(*ast.BinaryExpr)(nil),
 		(*ast.CallExpr)(nil),
 		(*ast.CompositeLit)(nil),
+		(*ast.Field)(nil),
 		(*ast.File)(nil),
 		(*ast.FuncDecl)(nil),
 		(*ast.FuncLit)(nil),
+		(*ast.InterfaceType)(nil),
 		(*ast.LabeledStmt)(nil),
 		(*ast.SwitchStmt)(nil),
+		(*ast.TypeSpec)(nil),
 		(*ast.UnaryExpr)(nil),
+		(*ast.ValueSpec)(nil),
 	}
 
 	inspector.Preorder(filter, func(node ast.Node) {
@@ -172,6 +183,9 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 		case *ast.CompositeLit:
 			checkMakeAllocLit(pass, node, cfg.makeAllocs.value)
 
+		case *ast.Field:
+			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
+
 		case *ast.File:
 			checkSingleImports(pass, node, cfg.singleImports.value)
 
@@ -190,6 +204,9 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkParamsFuncLit(pass, node, cfg.params.value)
 			checkReturnsFuncLit(pass, node, cfg.returns.value)
 
+		case *ast.InterfaceType:
+			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
+
 		case *ast.LabeledStmt:
 			checkLabel(pass, node, cfg.labelsRegexp)
 
@@ -197,8 +214,14 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkSwitchCases(pass, node, cfg.switchCases.value)
 			checkSwitchDefault(pass, node, cfg.switchDefaults.value)
 
+		case *ast.TypeSpec:
+			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
+
 		case *ast.UnaryExpr:
 			checkNewAllocLit(pass, node, cfg.newAllocs.value)
+
+		case *ast.ValueSpec:
+			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
 		}
 	})
 }

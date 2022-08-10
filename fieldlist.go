@@ -46,7 +46,3 @@ func checkFieldList(pass *analysis.Pass, fields *ast.FieldList, fieldTypePlural 
 		}
 	}
 }
-
-func namedFields(fields *ast.FieldList) bool {
-	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) != 0
-}
