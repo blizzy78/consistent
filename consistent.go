@@ -215,6 +215,7 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkSwitchDefault(pass, node, cfg.switchDefaults.value)
 
 		case *ast.TypeSpec:
+			checkTypeParamsType(pass, node, cfg.typeParams.value)
 			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
 
 		case *ast.UnaryExpr:
