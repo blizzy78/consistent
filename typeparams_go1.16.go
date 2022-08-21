@@ -11,3 +11,6 @@ import (
 
 func checkTypeParamsFunc(pass *analysis.Pass, fun *ast.FuncDecl, mode string) {
 }
+
+func checkTypeParamsType(pass *analysis.Pass, spec *ast.TypeSpec, mode string) {
+}
