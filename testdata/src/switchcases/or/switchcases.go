@@ -31,3 +31,10 @@ func notOR() {
 	case 1 < 2 && 2 < 3 || 3 < 4:
 	}
 }
+
+func typeSwitch() {
+	x := 1
+	switch interface{}(x).(type) {
+	case nil, struct{}:
+	}
+}

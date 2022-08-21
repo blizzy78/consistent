@@ -10,7 +10,8 @@ func TestRun_SwitchCases(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			runTest(t, "switchcases/"+strings.ToLower(mode), map[string]string{
 				"switchCases": mode,
-				"rangeChecks": "ignore",
+				"rangeChecks": flagIgnore,
+				"emptyIfaces": flagIgnore,
 			})
 		})
 	}
