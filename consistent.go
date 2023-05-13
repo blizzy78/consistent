@@ -112,7 +112,7 @@ func NewAnalyzer() *analysis.Analyzer {
 		Name: "consistent",
 		Doc:  "checks that common constructs are used consistently",
 
-		Run: func(pass *analysis.Pass) (interface{}, error) {
+		Run: func(pass *analysis.Pass) (any, error) {
 			run(pass, &cfg)
 			return nil, nil
 		},

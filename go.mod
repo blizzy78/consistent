@@ -1,13 +1,17 @@
 module github.com/blizzy78/consistent
 
-go 1.16
+go 1.20
 
 require (
-	github.com/go-toolsmith/astcast v1.0.0
-	github.com/go-toolsmith/astequal v1.0.2
-	github.com/go-toolsmith/strparse v1.0.0
-	github.com/matryer/is v1.4.0
-	golang.org/x/exp/typeparams v0.0.0-20220722155223-a9213eeb770e // indirect
-	golang.org/x/sys v0.0.0-20220808155132-1c4a2a72c664 // indirect
-	golang.org/x/tools v0.1.12
+	github.com/go-toolsmith/astcast v1.1.0
+	github.com/go-toolsmith/astequal v1.1.0
+	github.com/go-toolsmith/strparse v1.1.0
+	github.com/matryer/is v1.4.1
+	golang.org/x/tools v0.9.1
+)
+
+require (
+	golang.org/x/exp/typeparams v0.0.0-20230510235704-dd950f8aeaea // indirect
+	golang.org/x/mod v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 )

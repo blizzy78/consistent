@@ -19,7 +19,6 @@ linters:
     - bodyclose
     - cyclop
     - durationcheck
-    - errname
     - errorlint
     - exportloopref
     - forcetypeassert
@@ -49,6 +48,9 @@ linters:
     - wastedassign
     - wrapcheck
     - wsl
+  disable:
+    # broken?
+    - errname
 
 linters-settings:
   gocognit:
@@ -61,7 +63,7 @@ linters-settings:
     require-explanation: true
     require-specific: true
   unused:
-    go: 1.16
+    go: 1.20
   varnamelen:
     check-return: true
     ignore-type-assert-ok: true
