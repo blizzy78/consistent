@@ -1,6 +1,3 @@
-//go:build (go1.16 && !go1.18) || (go1.17 && !go1.18)
-// +build go1.16,!go1.18 go1.17,!go1.18
-
 package consistent
 
 import (
@@ -10,7 +7,9 @@ import (
 )
 
 func checkTypeParamsFunc(pass *analysis.Pass, fun *ast.FuncDecl, mode string) {
+	checkFieldList(pass, fun.Type.TypeParams, "function type parameters", mode)
 }
 
 func checkTypeParamsType(pass *analysis.Pass, spec *ast.TypeSpec, mode string) {
+	checkFieldList(pass, spec.TypeParams, "type parameters", mode)
 }
