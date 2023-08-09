@@ -14,20 +14,28 @@ permissions:
   pull-requests: read
 
 jobs:
-  golangci:
-    name: golangci-lint
+  lint:
+    name: Run Linters
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.20'
+          go-version: '1.21'
 
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: golangci-lint
+      - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run consistent
+        run: |
+              CGO_ENABLED=0 go build -o consistent ./cmd/consistent
+              go vet -vettool=consistent ./...
