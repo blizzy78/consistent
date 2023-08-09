@@ -132,6 +132,8 @@ func slogLoggerFunction(pass *analysis.Pass, sel *ast.SelectorExpr) *slogFunc {
 		return nil
 	}
 
+	slogLoggerType = types.NewPointer(slogLoggerType)
+
 	loggerTyp := pass.TypesInfo.TypeOf(sel.X)
 
 	if !types.AssignableTo(loggerTyp, slogLoggerType) {
