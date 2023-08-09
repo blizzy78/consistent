@@ -27,6 +27,7 @@ type configuration struct {
 	switchCases    enumValue
 	switchDefaults enumValue
 	emptyIfaces    enumValue
+	slogAttrs      enumValue
 	labelsRegexp   regexpValue
 }
 
@@ -105,6 +106,11 @@ func NewAnalyzer() *analysis.Analyzer {
 			value:   emptyIfacesAny,
 		},
 
+		slogAttrs: enumValue{
+			allowed: slogAttrsFlagAllowedValues,
+			value:   slogAttrsAttr,
+		},
+
 		labelsRegexp: newRegexpValue("^[a-z][a-zA-Z0-9]*$"),
 	}
 
@@ -136,6 +142,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	ana.Flags.Var(&cfg.switchCases, "switchCases", cfg.switchCases.description("check switch case clauses"))
 	ana.Flags.Var(&cfg.switchDefaults, "switchDefaults", cfg.switchDefaults.description("check switch default clauses"))
 	ana.Flags.Var(&cfg.emptyIfaces, "emptyIfaces", cfg.emptyIfaces.description("check empty interfaces"))
+	ana.Flags.Var(&cfg.slogAttrs, "slogAttrs", cfg.slogAttrs.description("check log/slog argument types"))
 	ana.Flags.Var(&cfg.labelsRegexp, "labelsRegexp", "check labels against regexp (\"\" to ignore)")
 
 	return &ana
@@ -179,6 +186,7 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 		case *ast.CallExpr:
 			checkNewAllocNew(pass, node, cfg.newAllocs.value)
 			checkMakeAllocMake(pass, node, cfg.makeAllocs.value)
+			checkSlogAttrs(pass, node, cfg.slogAttrs.value)
 
 		case *ast.CompositeLit:
 			checkMakeAllocLit(pass, node, cfg.makeAllocs.value)

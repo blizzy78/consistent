@@ -234,6 +234,21 @@ var x interface{}
 ```
 
 
+**-slogAttrs - check log/slog argument types**
+
+```go
+// -slogAttrs bare
+slog.Info("test", "value", 123, "foo", "bar")
+
+// -slogAttrs attr
+slog.Info("test", slog.Int("value", 123), slog.String("foo", "bar"))
+
+// -slogAttrs consistent (both variants are valid)
+slog.Info("test", "value", 123, "foo", "bar")
+slog.Info("test", slog.Int("value", 123), slog.String("foo", "bar"))
+```
+
+
 **-labelsRegexp - check labels against regexp**
 
 ```go
