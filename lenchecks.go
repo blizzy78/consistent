@@ -37,11 +37,14 @@ func checkLenCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) { //n
 
 	switch mode {
 	case lenChecksEqualZero:
-		if (oper == token.GTR && litInt == 0) ||
-			(oper == token.GEQ && litInt == 1) ||
-			(oper == token.LEQ && litInt == 0) ||
+		if (oper == token.LEQ && litInt == 0) ||
 			(oper == token.LSS && litInt == 1) {
-			pass.Reportf(expr.Pos(), "check if %s is (not) 0 instead", fun)
+			pass.Reportf(expr.Pos(), "check if %s is 0 instead", fun)
+		}
+
+		if (oper == token.GTR && litInt == 0) ||
+			(oper == token.GEQ && litInt == 1) {
+			pass.Reportf(expr.Pos(), "check if %s is not 0 instead", fun)
 		}
 
 	case lenChecksCompareZero:
