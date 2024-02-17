@@ -258,14 +258,31 @@ FOO: // error
 ```
 
 
-Standalone Usage
-----------------
+Running
+-------
 
-The `cmd/consistent/` folder provides a standalone command line utility. You can build it like this:
+There are multiple ways to run the analyzer:
 
-```
-go build -o consistent ./cmd/consistent/
-```
+- Using Go directly:
+
+  ```
+  go run github.com/blizzy78/consistent/cmd/consistent@latest ARGS
+  ```
+
+- Install using Go, then running from $PATH:
+
+  ```
+  go install github.com/blizzy78/consistent/cmd/consistent@latest
+  consistent ARGS
+  ```
+
+- Using Go vet:
+
+  ```
+  go install github.com/blizzy78/consistent/cmd/consistent@latest
+  go vet -vettool=$(which consistent) ARGS
+  ```
+
 
 **Usage**
 
@@ -317,6 +334,8 @@ Flags:
     	check function/method return value types (ignore/explicit/compact) (default explicit)
   -singleImports value
     	check single import declarations (ignore/bare/parens) (default bare)
+  -slogAttrs value
+    	check log/slog argument types (ignore/bare/attr/consistent) (default attr)
   -source
     	no effect (deprecated)
   -switchCases value
@@ -325,6 +344,8 @@ Flags:
     	check switch default clauses (ignore/last/first) (default last)
   -tags string
     	no effect (deprecated)
+  -test
+    	indicates whether test files should be analyzed, too (default true)
   -trace string
     	write trace log to this file
   -typeParams value
