@@ -202,6 +202,7 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 				checkParamsFunc(pass, node, cfg.params.value)
 				checkReturnsFunc(pass, node, cfg.returns.value)
 				checkTypeParamsFunc(pass, node, cfg.typeParams.value)
+
 				return
 			}
 

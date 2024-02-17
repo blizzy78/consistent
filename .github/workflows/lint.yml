@@ -1,41 +1,60 @@
 name: Lint
 
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - master
-
-  pull_request:
+on: [push, pull_request]
 
 permissions:
   contents: read
   pull-requests: read
 
 jobs:
-  lint:
-    name: Run Linters
+  golangci-lint:
+    name: Run golangci-lint
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.22'
 
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
         with:
           version: latest
 
-      - name: Run go vet
+  vet:
+    name: Run go vet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: vet
         run: go vet ./...
 
-      - name: Run consistent
-        run: |
-              CGO_ENABLED=0 go build -o consistent ./cmd/consistent
-              go vet -vettool=consistent ./...
+  consistent:
+    name: Run consistent
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: consistent
+        run: |-
+          CGO_ENABLED=0 go build -o consistent ./cmd/consistent
+          go vet -vettool=consistent ./...
