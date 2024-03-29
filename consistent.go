@@ -3,6 +3,7 @@ package consistent
 import (
 	"go/ast"
 	"go/token"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -13,23 +14,24 @@ import (
 )
 
 type configuration struct {
-	params         enumValue
-	returns        enumValue
-	typeParams     enumValue
-	funcTypeParams enumValue
-	singleImports  enumValue
-	newAllocs      enumValue
-	makeAllocs     enumValue
-	hexLits        enumValue
-	rangeChecks    enumValue
-	andNOTs        enumValue
-	floatLits      enumValue
-	lenChecks      enumValue
-	switchCases    enumValue
-	switchDefaults enumValue
-	emptyIfaces    enumValue
-	slogAttrs      enumValue
-	labelsRegexp   regexpValue
+	params                  enumValue
+	returns                 enumValue
+	typeParams              enumValue
+	funcTypeParams          enumValue
+	singleImports           enumValue
+	newAllocs               enumValue
+	makeAllocs              enumValue
+	hexLits                 enumValue
+	rangeChecks             enumValue
+	andNOTs                 enumValue
+	floatLits               enumValue
+	lenChecks               enumValue
+	switchCases             enumValue
+	switchDefaults          enumValue
+	emptyIfaces             enumValue
+	slogAttrs               enumValue
+	labelsRegexp            regexpValue
+	fileCommentIgnoreRegexp regexpValue
 }
 
 const flagIgnore = "ignore"
@@ -118,6 +120,8 @@ func NewAnalyzer() *analysis.Analyzer {
 		},
 
 		labelsRegexp: newRegexpValue("^[a-z][a-zA-Z0-9]*$"),
+
+		fileCommentIgnoreRegexp: newRegexpValue(""),
 	}
 
 	ana := analysis.Analyzer{
@@ -150,13 +154,16 @@ func NewAnalyzer() *analysis.Analyzer {
 	ana.Flags.Var(&cfg.switchDefaults, "switchDefaults", cfg.switchDefaults.description("check switch default clauses"))
 	ana.Flags.Var(&cfg.emptyIfaces, "emptyIfaces", cfg.emptyIfaces.description("check empty interfaces"))
 	ana.Flags.Var(&cfg.slogAttrs, "slogAttrs", cfg.slogAttrs.description("check log/slog argument types"))
-	ana.Flags.Var(&cfg.labelsRegexp, "labelsRegexp", "check labels against regexp (\"\" to ignore)")
+	ana.Flags.Var(&cfg.labelsRegexp, "labelsRegexp", "check labels against regexp (\"\" to disable)")
+	ana.Flags.Var(&cfg.fileCommentIgnoreRegexp, "fileCommentIgnoreRegexp", "ignore files containing comment matching regexp")
 
 	return &ana
 }
 
 func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only basic dispatcher logic
 	inspector := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector) //nolint:forcetypeassert // inspect.Analyzer always returns *inspector.Inspector
+
+	ignoreFiles := filesToIgnore(pass, cfg)
 
 	filter := []ast.Node{
 		(*ast.AssignStmt)(nil),
@@ -181,7 +188,13 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 	funcLits := []*ast.FuncLit{}
 	funcTypes := []*ast.FuncType{}
 
+	ignoreCurrentFile := false
+
 	inspector.Preorder(filter, func(node ast.Node) {
+		if ignoreCurrentFile {
+			return
+		}
+
 		switch node := node.(type) {
 		case *ast.AssignStmt:
 			checkAndNotAssignStmt(pass, node, cfg.andNOTs.value)
@@ -207,6 +220,11 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
 
 		case *ast.File:
+			ignoreCurrentFile = slices.Contains(ignoreFiles, node)
+			if ignoreCurrentFile {
+				return
+			}
+
 			checkSingleImports(pass, node, cfg.singleImports.value)
 
 		case *ast.FuncDecl:
@@ -261,6 +279,25 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 
 		checkParamsFuncType(pass, typ, cfg.funcTypeParams.value)
 	}
+}
+
+func filesToIgnore(pass *analysis.Pass, cfg *configuration) []*ast.File {
+	if cfg.fileCommentIgnoreRegexp.r == nil {
+		return nil
+	}
+
+	files := []*ast.File{}
+
+	for _, file := range pass.Files {
+		for _, comment := range file.Comments {
+			if cfg.fileCommentIgnoreRegexp.r.MatchString(comment.Text()) {
+				files = append(files, file)
+				break
+			}
+		}
+	}
+
+	return files
 }
 
 func isFuncDefinition(typ *ast.FuncType, decls []*ast.FuncDecl, lits []*ast.FuncLit) bool {

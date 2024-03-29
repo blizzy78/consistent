@@ -4,8 +4,8 @@ import "testing"
 
 func TestRun_LabelsRegexp(t *testing.T) {
 	tests := map[string]string{
-		"ignore": "",
-		"regexp": "^[a-z][a-zA-Z0-9]*$",
+		"disable": "",
+		"regexp":  "^[a-z][a-zA-Z0-9]*$",
 	}
 
 	for test, regexp := range tests {

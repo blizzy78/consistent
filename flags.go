@@ -37,10 +37,14 @@ func (e enumValue) description(desc string) string {
 	return desc + " (" + strings.Join(e.allowed, "/") + ")"
 }
 
-func newRegexpValue(s string) regexpValue {
+func newRegexpValue(val string) regexpValue {
+	if val == "" {
+		return regexpValue{}
+	}
+
 	return regexpValue{
-		r: regexp.MustCompile(s),
-		s: s,
+		r: regexp.MustCompile(val),
+		s: val,
 	}
 }
 

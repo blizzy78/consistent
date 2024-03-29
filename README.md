@@ -320,6 +320,8 @@ Flags:
     	debug flags, any subset of "fpstv"
   -emptyIfaces value
     	check empty interfaces (ignore/any/iface) (default any)
+  -fileCommentIgnoreRegexp value
+    	ignore files containing comment matching regexp
   -fix
     	apply all suggested fixes
   -flags
@@ -333,7 +335,7 @@ Flags:
   -json
     	emit JSON output
   -labelsRegexp value
-    	check labels against regexp ("" to ignore) (default ^[a-z][a-zA-Z0-9]*$)
+    	check labels against regexp ("" to disable) (default ^[a-z][a-zA-Z0-9]*$)
   -lenChecks value
     	check len/cap checks (ignore/equalZero/compareZero/compareOne) (default equalZero)
   -makeAllocs value
