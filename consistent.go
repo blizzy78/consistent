@@ -16,6 +16,7 @@ type configuration struct {
 	params         enumValue
 	returns        enumValue
 	typeParams     enumValue
+	funcTypeParams enumValue
 	singleImports  enumValue
 	newAllocs      enumValue
 	makeAllocs     enumValue
@@ -37,17 +38,22 @@ const flagIgnore = "ignore"
 func NewAnalyzer() *analysis.Analyzer {
 	cfg := configuration{
 		params: enumValue{
-			allowed: fieldListFlagAllowedValues,
+			allowed: paramsFlagAllowedValues,
 			value:   fieldListExplicit,
 		},
 
 		returns: enumValue{
-			allowed: fieldListFlagAllowedValues,
+			allowed: returnsFlagAllowedValues,
 			value:   fieldListExplicit,
 		},
 
 		typeParams: enumValue{
-			allowed: fieldListFlagAllowedValues,
+			allowed: typeParamsFlagAllowedValues,
+			value:   fieldListExplicit,
+		},
+
+		funcTypeParams: enumValue{
+			allowed: funcTypeParamsFlagAllowedValues,
 			value:   fieldListExplicit,
 		},
 
@@ -130,7 +136,8 @@ func NewAnalyzer() *analysis.Analyzer {
 
 	ana.Flags.Var(&cfg.params, "params", cfg.params.description("check function/method parameter types"))
 	ana.Flags.Var(&cfg.returns, "returns", cfg.returns.description("check function/method return value types"))
-	ana.Flags.Var(&cfg.typeParams, "typeParams", cfg.typeParams.description("check function type parameter types"))
+	ana.Flags.Var(&cfg.typeParams, "typeParams", cfg.typeParams.description("check type parameter types"))
+	ana.Flags.Var(&cfg.funcTypeParams, "funcTypeParams", cfg.funcTypeParams.description("check function type parameter types"))
 	ana.Flags.Var(&cfg.singleImports, "singleImports", cfg.singleImports.description("check single import declarations"))
 	ana.Flags.Var(&cfg.newAllocs, "newAllocs", cfg.newAllocs.description("check allocations using new"))
 	ana.Flags.Var(&cfg.makeAllocs, "makeAllocs", cfg.makeAllocs.description("check allocations using make"))
@@ -161,6 +168,7 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 		(*ast.File)(nil),
 		(*ast.FuncDecl)(nil),
 		(*ast.FuncLit)(nil),
+		(*ast.FuncType)(nil),
 		(*ast.InterfaceType)(nil),
 		(*ast.LabeledStmt)(nil),
 		(*ast.SwitchStmt)(nil),
@@ -168,6 +176,10 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 		(*ast.UnaryExpr)(nil),
 		(*ast.ValueSpec)(nil),
 	}
+
+	funcDecls := []*ast.FuncDecl{}
+	funcLits := []*ast.FuncLit{}
+	funcTypes := []*ast.FuncType{}
 
 	inspector.Preorder(filter, func(node ast.Node) {
 		switch node := node.(type) {
@@ -198,6 +210,8 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkSingleImports(pass, node, cfg.singleImports.value)
 
 		case *ast.FuncDecl:
+			funcDecls = append(funcDecls, node)
+
 			if node.Recv == nil {
 				checkParamsFunc(pass, node, cfg.params.value)
 				checkReturnsFunc(pass, node, cfg.returns.value)
@@ -210,8 +224,13 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkReturnsMethod(pass, node, cfg.returns.value)
 
 		case *ast.FuncLit:
+			funcLits = append(funcLits, node)
+
 			checkParamsFuncLit(pass, node, cfg.params.value)
 			checkReturnsFuncLit(pass, node, cfg.returns.value)
+
+		case *ast.FuncType:
+			funcTypes = append(funcTypes, node)
 
 		case *ast.InterfaceType:
 			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
@@ -234,6 +253,30 @@ func run(pass *analysis.Pass, cfg *configuration) { //nolint:cyclop // it's only
 			checkEmptyIface(pass, node, cfg.emptyIfaces.value)
 		}
 	})
+
+	for _, typ := range funcTypes {
+		if isFuncDefinition(typ, funcDecls, funcLits) {
+			continue
+		}
+
+		checkParamsFuncType(pass, typ, cfg.funcTypeParams.value)
+	}
+}
+
+func isFuncDefinition(typ *ast.FuncType, decls []*ast.FuncDecl, lits []*ast.FuncLit) bool {
+	for _, decl := range decls {
+		if decl.Type == typ {
+			return true
+		}
+	}
+
+	for _, lit := range lits {
+		if lit.Type == typ {
+			return true
+		}
+	}
+
+	return false
 }
 
 func litInt(expr ast.Expr) (int, bool) {
@@ -273,4 +316,12 @@ func litInt(expr ast.Expr) (int, bool) {
 	}
 
 	return int(i), true
+}
+
+func namedFields(fields *ast.FieldList) bool {
+	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) != 0
+}
+
+func unnamedFields(fields *ast.FieldList) bool {
+	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) == 0
 }

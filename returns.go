@@ -6,6 +6,8 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+var returnsFlagAllowedValues = []string{flagIgnore, fieldListExplicit, fieldListCompact}
+
 func checkReturnsFunc(pass *analysis.Pass, fun *ast.FuncDecl, mode string) {
 	if !namedFields(fun.Type.Results) {
 		return
@@ -28,8 +30,4 @@ func checkReturnsFuncLit(pass *analysis.Pass, fun *ast.FuncLit, mode string) {
 	}
 
 	checkFieldList(pass, fun.Type.Results, "function return values", mode)
-}
-
-func namedFields(fields *ast.FieldList) bool {
-	return fields != nil && len(fields.List) != 0 && len(fields.List[0].Names) != 0
 }

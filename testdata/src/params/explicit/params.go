@@ -11,10 +11,10 @@ func funcSingleParam(_ int) {
 func funcExplicit(_ int, _ int) {
 }
 
-func funcExplicitNotConsecutive(_ int, _ string, _ int) {
+func funcExplicitNonConsecutive(_ int, _ string, _ int) {
 }
 
-func funcCompact(_, _ int) { // want "declare the type of function arguments explicitly"
+func funcCompact(_, _ int) { // want "declare the type of function parameters explicitly"
 }
 
 func funcLitNoParams() {
@@ -32,13 +32,13 @@ func funcLitExplicit() {
 	}
 }
 
-func funcLitExplicitNotConsecutive() {
+func funcLitExplicitNonConsecutive() {
 	_ = func(_ int, _ string, _ int) {
 	}
 }
 
 func funcLitCompact() {
-	_ = func(_, _ int) { // want "declare the type of function arguments explicitly"
+	_ = func(_, _ int) { // want "declare the type of function parameters explicitly"
 	}
 }
 
@@ -51,8 +51,8 @@ func (f foo) methodSingleParam(_ int) {
 func (f foo) methodExplicit(_ int, _ int) {
 }
 
-func (f foo) methodExplicitNotConsecutive(_ int, _ string, _ int) {
+func (f foo) methodExplicitNonConsecutive(_ int, _ string, _ int) {
 }
 
-func (f foo) methodCompact(_, _ int) { // want "declare the type of method arguments explicitly"
+func (f foo) methodCompact(_, _ int) { // want "declare the type of method parameters explicitly"
 }

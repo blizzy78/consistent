@@ -1,6 +1,6 @@
 package consistent
 
-//go:generate go run ./cmd/rangeexprstyles/ rangechecks_styles.go
+//go:generate go run ./cmd/rangeexprstyles rangechecks_styles.go
 //go:generate gofmt -w rangechecks_styles.go
 
 import (

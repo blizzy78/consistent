@@ -11,8 +11,6 @@ const (
 	fieldListCompact  = "compact"
 )
 
-var fieldListFlagAllowedValues = []string{flagIgnore, fieldListExplicit, fieldListCompact}
-
 func checkFieldList(pass *analysis.Pass, fields *ast.FieldList, fieldTypePlural string, mode string) {
 	if fields == nil {
 		return

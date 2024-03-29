@@ -9,7 +9,7 @@ A Go analyzer that checks that common constructs are used consistently.
 **Example output**
 
 ```
-test.go:9:10: declare the type of function arguments explicitly (consistent)
+test.go:9:10: declare the type of function parameters explicitly (consistent)
         _ = func(a, b int) {}
                 ^
 test.go:11:13: declare the type of function return values explicitly (consistent)
@@ -78,7 +78,7 @@ func f() (a, b int) {
 ```
 
 
-**-typeParams - check function type parameter types**
+**-typeParams - check type parameter types**
 
 ```go
 // -typeParams explicit
@@ -88,6 +88,20 @@ func f[K any, V any]() {
 // -typeParams compact
 func f[K, V any]() {
 }
+```
+
+
+**-funcTypeParams - check function type parameter types**
+
+```go
+// -funcTypeParams explicit
+type f func(a int, b int)
+
+// -funcTypeParams compact
+type f func(a, b int)
+
+// -funcTypeParams unnamed
+type f func(int, int)
 ```
 
 
@@ -312,6 +326,8 @@ Flags:
     	print analyzer flags in JSON
   -floatLits value
     	check floating-point literals (ignore/explicit/implicit) (default explicit)
+  -funcTypeParams value
+    	check function type parameter types (ignore/explicit/compact/unnamed) (default explicit)
   -hexLits value
     	check upper/lowercase in hex literals (ignore/lower/upper) (default lower)
   -json
@@ -349,7 +365,7 @@ Flags:
   -trace string
     	write trace log to this file
   -typeParams value
-    	check function type parameter types (ignore/explicit/compact) (default explicit)
+    	check type parameter types (ignore/explicit/compact) (default explicit)
   -v	no effect (deprecated)
 ```
 
