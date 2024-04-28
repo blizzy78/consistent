@@ -3,6 +3,7 @@ package consistent
 import (
 	"go/ast"
 	"go/token"
+	"go/types"
 
 	"github.com/go-toolsmith/astcast"
 	"golang.org/x/tools/go/analysis"
@@ -47,6 +48,11 @@ func checkNewAllocNew(pass *analysis.Pass, call *ast.CallExpr, mode string) {
 	}
 
 	if len(call.Args) != 1 {
+		return
+	}
+
+	typ := pass.TypesInfo.TypeOf(call.Args[0])
+	if _, ok := typ.Underlying().(*types.Interface); ok {
 		return
 	}
 

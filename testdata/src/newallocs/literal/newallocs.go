@@ -1,6 +1,9 @@
 package newallocs
 
-import "strings"
+import (
+	"io"
+	"strings"
+)
 
 type foo struct {
 	f int
@@ -14,6 +17,7 @@ func allocLiteral() {
 func allocNew() {
 	_ = new(foo)             // want "use zero-value literal instead of calling new"
 	_ = new(strings.Builder) // want "use zero-value literal instead of calling new"
+	_ = new(io.Reader)
 }
 
 func allocNonEmptyLiteral() {
