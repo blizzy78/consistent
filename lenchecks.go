@@ -39,12 +39,12 @@ func checkLenCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) { //n
 	case lenChecksEqualZero:
 		if (oper == token.LEQ && litInt == 0) ||
 			(oper == token.LSS && litInt == 1) {
-			pass.Reportf(expr.Pos(), "check if %s is 0 instead", fun)
+			reportf(pass, expr.Pos(), "check if %s is 0 instead", fun)
 		}
 
 		if (oper == token.GTR && litInt == 0) ||
 			(oper == token.GEQ && litInt == 1) {
-			pass.Reportf(expr.Pos(), "check if %s is not 0 instead", fun)
+			reportf(pass, expr.Pos(), "check if %s is not 0 instead", fun)
 		}
 
 	case lenChecksCompareZero:
@@ -52,7 +52,7 @@ func checkLenCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) { //n
 			(oper == token.GEQ && litInt == 1) ||
 			(oper == token.EQL && litInt == 0) ||
 			(oper == token.LSS && litInt == 1) {
-			pass.Reportf(expr.Pos(), "compare %s to 0 instead", fun)
+			reportf(pass, expr.Pos(), "compare %s to 0 instead", fun)
 		}
 
 	case lenChecksCompareOne:
@@ -60,7 +60,7 @@ func checkLenCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) { //n
 			(oper == token.GTR && litInt == 0) ||
 			(oper == token.EQL && litInt == 0) ||
 			(oper == token.LEQ && litInt == 0) {
-			pass.Reportf(expr.Pos(), "compare %s to 1 instead", fun)
+			reportf(pass, expr.Pos(), "compare %s to 1 instead", fun)
 		}
 	}
 }

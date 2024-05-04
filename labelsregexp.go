@@ -15,5 +15,5 @@ func checkLabel(pass *analysis.Pass, stmt *ast.LabeledStmt, regexp regexpValue) 
 		return
 	}
 
-	pass.Reportf(stmt.Label.Pos(), "change label to match regular expression: %s", regexp.s)
+	reportf(pass, stmt.Label.Pos(), "change label to match regular expression: %s", regexp.s)
 }

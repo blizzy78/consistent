@@ -42,7 +42,7 @@ func checkSwitchCase(pass *analysis.Pass, clause *ast.CaseClause, mode string) {
 				continue
 			}
 
-			pass.Reportf(expr.Pos(), "separate cases with comma instead of using logical OR")
+			reportf(pass, expr.Pos(), "separate cases with comma instead of using logical OR")
 		}
 
 	case switchCasesOR:
@@ -50,7 +50,7 @@ func checkSwitchCase(pass *analysis.Pass, clause *ast.CaseClause, mode string) {
 			return
 		}
 
-		pass.Reportf(clause.Pos(), "use logical OR instead of separating cases with comma")
+		reportf(pass, clause.Pos(), "use logical OR instead of separating cases with comma")
 	}
 }
 

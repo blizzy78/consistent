@@ -29,14 +29,14 @@ func checkAndNotExpr(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) {
 			return
 		}
 
-		pass.Reportf(expr.Pos(), "use AND-NOT operator instead of AND operator with complement expression")
+		reportf(pass, expr.Pos(), "use AND-NOT operator instead of AND operator with complement expression")
 
 	case andNOTsANDComp:
 		if expr.Op != token.AND_NOT {
 			return
 		}
 
-		pass.Reportf(expr.Pos(), "use AND operator with complement expression instead of AND-NOT operator")
+		reportf(pass, expr.Pos(), "use AND operator with complement expression instead of AND-NOT operator")
 	}
 }
 
@@ -59,13 +59,13 @@ func checkAndNotAssignStmt(pass *analysis.Pass, stmt *ast.AssignStmt, mode strin
 			return
 		}
 
-		pass.Reportf(stmt.Pos(), "use AND-NOT assignment instead of AND assignment with complement expression")
+		reportf(pass, stmt.Pos(), "use AND-NOT assignment instead of AND assignment with complement expression")
 
 	case andNOTsANDComp:
 		if stmt.Tok != token.AND_NOT_ASSIGN {
 			return
 		}
 
-		pass.Reportf(stmt.Pos(), "use AND assignment with complement expression instead of AND-NOT assignment")
+		reportf(pass, stmt.Pos(), "use AND assignment with complement expression instead of AND-NOT assignment")
 	}
 }

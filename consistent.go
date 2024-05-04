@@ -300,6 +300,55 @@ func filesToIgnore(pass *analysis.Pass, cfg *configuration) []*ast.File {
 	return files
 }
 
+func reportf(pass *analysis.Pass, pos token.Pos, format string, args ...any) {
+	if noLintDirectivePos(pass, pos) {
+		return
+	}
+
+	pass.Reportf(pos, format, args...)
+}
+
+func noLintDirectivePos(pass *analysis.Pass, pos token.Pos) bool {
+	line := pass.Fset.Position(pos).Line
+
+	for _, file := range pass.Files {
+		if pos < file.FileStart || pos > file.FileEnd {
+			continue
+		}
+
+		for _, comment := range file.Comments {
+			if pass.Fset.Position(comment.Pos()).Line < line {
+				continue
+			}
+
+			return noLintDirective(comment.List[0].Text)
+		}
+	}
+
+	return false
+}
+
+func noLintDirective(comment string) bool {
+	if !strings.HasPrefix(comment, "//nolint:") {
+		return false
+	}
+
+	comment = comment[9:]
+
+	secondaryCommentPos := strings.Index(comment, "//")
+	if secondaryCommentPos >= 0 {
+		comment = comment[:secondaryCommentPos]
+	}
+
+	for _, p := range strings.Split(comment, ",") {
+		if strings.TrimSpace(p) == "consistent" {
+			return true
+		}
+	}
+
+	return false
+}
+
 func isFuncDefinition(typ *ast.FuncType, decls []*ast.FuncDecl, lits []*ast.FuncLit) bool {
 	for _, decl := range decls {
 		if decl.Type == typ {

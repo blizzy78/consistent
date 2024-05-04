@@ -37,7 +37,7 @@ func checkEmptyIfaceAny(pass *analysis.Pass, node ast.Node) {
 		return
 	}
 
-	pass.Reportf(node.Pos(), "use any instead of interface{}")
+	reportf(pass, node.Pos(), "use any instead of interface{}")
 }
 
 func checkEmptyIfaceIface(pass *analysis.Pass, node ast.Node) {
@@ -56,5 +56,5 @@ func checkEmptyIfaceIface(pass *analysis.Pass, node ast.Node) {
 		return
 	}
 
-	pass.Reportf(typ.Pos(), "use interface{} instead of any")
+	reportf(pass, typ.Pos(), "use interface{} instead of any")
 }

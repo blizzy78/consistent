@@ -33,8 +33,8 @@ func checkFloatLit(pass *analysis.Pass, lit *ast.BasicLit, mode string) {
 
 	switch implicit := dotPos == 0; {
 	case mode == floatLitsExplicit && implicit:
-		pass.Reportf(lit.Pos(), "add zero before decimal point in floating-point literal")
+		reportf(pass, lit.Pos(), "add zero before decimal point in floating-point literal")
 	case mode == floatLitsImplicit && !implicit && strings.TrimLeft(value[:dotPos], "0") == "":
-		pass.Reportf(lit.Pos(), "remove zero before decimal point in floating-point literal")
+		reportf(pass, lit.Pos(), "remove zero before decimal point in floating-point literal")
 	}
 }

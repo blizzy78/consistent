@@ -50,13 +50,13 @@ func checkSlogAttrs(pass *analysis.Pass, call *ast.CallExpr, mode string) {
 
 	switch {
 	case mode == slogAttrsBare && attrs:
-		pass.Reportf(call.Pos(), "use bare arguments only")
+		reportf(pass, call.Pos(), "use bare arguments only")
 
 	case mode == slogAttrsAttr && bare:
-		pass.Reportf(call.Pos(), "use Attr arguments only")
+		reportf(pass, call.Pos(), "use Attr arguments only")
 
 	case mode == slogAttrsConsistent && bare && attrs:
-		pass.Reportf(call.Pos(), "use consistent arguments (either bare or Attr)")
+		reportf(pass, call.Pos(), "use consistent arguments (either bare or Attr)")
 	}
 }
 

@@ -46,6 +46,15 @@ See below for a complete list of checks.
 This analyzer works similar to [go-consistent], but with explicit configuration of checks instead of
 auto-detection, which should make it faster.
 
+The `nolint:consistent` directive can be used to ignore warnings on a particular line of code,
+for example:
+
+```go
+_ = make([]int, 0) //nolint:consistent
+
+_ = make([]int, 0) //nolint:consistent // human-readable explanation here
+```
+
 
 List of Checks
 --------------

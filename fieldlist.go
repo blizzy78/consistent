@@ -22,7 +22,7 @@ func checkFieldList(pass *analysis.Pass, fields *ast.FieldList, fieldTypePlural 
 	case fieldListExplicit:
 		for _, f := range fields.List {
 			if len(f.Names) > 1 {
-				pass.Reportf(fields.Pos(), "declare the type of %s explicitly", fieldTypePlural)
+				reportf(pass, fields.Pos(), "declare the type of %s explicitly", fieldTypePlural)
 				break
 			}
 		}
@@ -38,7 +38,7 @@ func checkFieldList(pass *analysis.Pass, fields *ast.FieldList, fieldTypePlural 
 			prevTyp := pass.TypesInfo.TypeOf(list[i].Type)
 
 			if typ == prevTyp {
-				pass.Reportf(fields.Pos(), "declare the type of similar consecutive %s only once", fieldTypePlural)
+				reportf(pass, fields.Pos(), "declare the type of similar consecutive %s only once", fieldTypePlural)
 				break
 			}
 		}

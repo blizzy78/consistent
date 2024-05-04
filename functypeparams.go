@@ -17,11 +17,11 @@ func checkParamsFuncType(pass *analysis.Pass, typ *ast.FuncType, mode string) {
 
 	switch {
 	case namedFields(typ.Params) && mode == funcTypeParamsUnnamed:
-		pass.Reportf(typ.Pos(), "use unnamed function type parameters")
+		reportf(pass, typ.Pos(), "use unnamed function type parameters")
 		return
 
 	case unnamedFields(typ.Params) && mode != flagIgnore && mode != funcTypeParamsUnnamed:
-		pass.Reportf(typ.Pos(), "use named function type parameters")
+		reportf(pass, typ.Pos(), "use named function type parameters")
 		return
 	}
 

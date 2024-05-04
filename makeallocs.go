@@ -26,9 +26,9 @@ func checkMakeAllocLit(pass *analysis.Pass, expr *ast.CompositeLit, mode string)
 
 	switch pass.TypesInfo.TypeOf(expr.Type).Underlying().(type) {
 	case *types.Slice:
-		pass.Reportf(expr.Pos(), "call make instead of using slice literal")
+		reportf(pass, expr.Pos(), "call make instead of using slice literal")
 	case *types.Map:
-		pass.Reportf(expr.Pos(), "call make instead of using map literal")
+		reportf(pass, expr.Pos(), "call make instead of using map literal")
 	}
 }
 
@@ -71,9 +71,9 @@ func checkMakeAllocMake(pass *analysis.Pass, call *ast.CallExpr, mode string) { 
 	}
 
 	if mapTyp {
-		pass.Reportf(call.Pos(), "use map literal instead of calling make")
+		reportf(pass, call.Pos(), "use map literal instead of calling make")
 		return
 	}
 
-	pass.Reportf(call.Pos(), "use slice literal instead of calling make")
+	reportf(pass, call.Pos(), "use slice literal instead of calling make")
 }

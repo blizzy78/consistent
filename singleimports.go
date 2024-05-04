@@ -33,10 +33,10 @@ func checkSingleImports(pass *analysis.Pass, file *ast.File, mode string) {
 
 	switch parens := decl.Lparen.IsValid() && decl.Rparen.IsValid(); {
 	case mode == singleImportsBare && parens:
-		pass.Reportf(decl.Pos(), "remove parens around single import declaration")
+		reportf(pass, decl.Pos(), "remove parens around single import declaration")
 
 	case mode == singleImportsParens && !parens:
-		pass.Reportf(decl.Pos(), "add parens around single import declaration")
+		reportf(pass, decl.Pos(), "add parens around single import declaration")
 	}
 }
 

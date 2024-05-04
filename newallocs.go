@@ -35,7 +35,7 @@ func checkNewAllocLit(pass *analysis.Pass, expr *ast.UnaryExpr, mode string) {
 		return
 	}
 
-	pass.Reportf(expr.Pos(), "call new instead of using zero-value literal")
+	reportf(pass, expr.Pos(), "call new instead of using zero-value literal")
 }
 
 func checkNewAllocNew(pass *analysis.Pass, call *ast.CallExpr, mode string) {
@@ -56,7 +56,7 @@ func checkNewAllocNew(pass *analysis.Pass, call *ast.CallExpr, mode string) {
 		return
 	}
 
-	pass.Reportf(call.Pos(), "use zero-value literal instead of calling new")
+	reportf(pass, call.Pos(), "use zero-value literal instead of calling new")
 }
 
 func identOrSelector(e ast.Expr) bool {

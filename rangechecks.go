@@ -34,7 +34,7 @@ func checkRangeCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) {
 		return
 	}
 
-	pass.Reportf(expr.Pos(), rangeCheckFlagDesc[mode])
+	reportf(pass, expr.Pos(), rangeCheckFlagDesc[mode])
 }
 
 func rangeExprStyle(expr *ast.BinaryExpr) string { //nolint:cyclop,gocognit // collecting a bunch of flags

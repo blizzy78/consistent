@@ -28,9 +28,9 @@ func checkHexLit(pass *analysis.Pass, lit *ast.BasicLit, mode string) {
 
 	switch {
 	case mode == hexLitsLower && strings.ToLower(val) != val:
-		pass.Reportf(lit.Pos(), "use lowercase digits in hex literal")
+		reportf(pass, lit.Pos(), "use lowercase digits in hex literal")
 	case mode == hexLitsUpper && strings.ToUpper(val) != val:
-		pass.Reportf(lit.Pos(), "use uppercase digits in hex literal")
+		reportf(pass, lit.Pos(), "use uppercase digits in hex literal")
 	}
 }
 

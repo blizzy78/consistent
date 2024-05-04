@@ -30,14 +30,14 @@ func checkSwitchDefault(pass *analysis.Pass, stmt *ast.SwitchStmt, mode string) 
 			return
 		}
 
-		pass.Reportf(stmt.Body.List[idx].Pos(), "move switch default clause to the end")
+		reportf(pass, stmt.Body.List[idx].Pos(), "move switch default clause to the end")
 
 	case switchDefaultsFirst:
 		if idx == 0 {
 			return
 		}
 
-		pass.Reportf(stmt.Body.List[idx].Pos(), "move switch default clause to the beginning")
+		reportf(pass, stmt.Body.List[idx].Pos(), "move switch default clause to the beginning")
 	}
 }
 
