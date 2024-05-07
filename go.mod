@@ -9,7 +9,7 @@ require (
 	github.com/go-toolsmith/astequal v1.2.0
 	github.com/go-toolsmith/strparse v1.1.0
 	github.com/matryer/is v1.4.1
-	golang.org/x/tools v0.20.0
+	golang.org/x/tools v0.21.0
 )
 
 require (
