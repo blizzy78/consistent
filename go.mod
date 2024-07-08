@@ -9,11 +9,11 @@ require (
 	github.com/go-toolsmith/astequal v1.2.0
 	github.com/go-toolsmith/strparse v1.1.0
 	github.com/matryer/is v1.4.1
-	golang.org/x/tools v0.22.0
+	golang.org/x/tools v0.23.0
 )
 
 require (
 	github.com/google/go-cmp v0.6.0 // indirect
-	golang.org/x/mod v0.18.0 // indirect
+	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 )
