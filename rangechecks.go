@@ -19,11 +19,6 @@ const (
 
 var rangeChecksFlagAllowedValues = []string{flagIgnore, rangeChecksLeft, rangeChecksCenter}
 
-var rangeCheckFlagDesc = map[string]string{
-	rangeChecksLeft:   "write common term in range expression on the left",
-	rangeChecksCenter: "write common term in range expression in the center",
-}
-
 func checkRangeCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) {
 	if mode == flagIgnore {
 		return
@@ -34,7 +29,12 @@ func checkRangeCheck(pass *analysis.Pass, expr *ast.BinaryExpr, mode string) {
 		return
 	}
 
-	reportf(pass, expr.Pos(), rangeCheckFlagDesc[mode])
+	switch mode {
+	case rangeChecksLeft:
+		reportf(pass, expr.Pos(), "write common term in range expression on the left")
+	case rangeChecksCenter:
+		reportf(pass, expr.Pos(), "write common term in range expression in the center")
+	}
 }
 
 func rangeExprStyle(expr *ast.BinaryExpr) string { //nolint:cyclop,gocognit // collecting a bunch of flags
